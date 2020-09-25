@@ -1,0 +1,12 @@
+version: '2'
+services:
+  node:
+    image: node:14 
+    restart: always
+    working_dir: /app
+    command: 'yarn production'
+    volumes:
+      - .:/app
+    ports:
+      - 3000:3000
+
