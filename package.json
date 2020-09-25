@@ -1,9 +1,9 @@
 {
-  "name": "poll",
+  "name": "polly",
   "version": "1.0.0",
   "description": "Quick, anonymous, self-hosted polling.",
   "main": "server.js",
-  "repository": "https://git.whitty.dev/whitty/poll",
+  "repository": "https://github.com/whitbur/polly",
   "author": "Whitney",
   "license": "MIT",
   "dependencies": {
