@@ -1,0 +1,26 @@
+{
+  "name": "poll",
+  "version": "1.0.0",
+  "description": "Quick, anonymous, self-hosted polling.",
+  "main": "server.js",
+  "repository": "https://git.whitty.dev/whitty/poll",
+  "author": "Whitney",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "lodash": "^4.17.20",
+    "yargs": "^16.0.3"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0"
+  },
+  "scripts": {
+    "start": "concurrently \"yarn run dev_server\" \"yarn run dev_client\"",
+    "dev_server": "node server.js -b localhost -p 3001",
+    "dev_client": "cd client && yarn start",
+    "build": "cd client && yarn build",
+    "production": "node server.js"
+  }
+
+}
