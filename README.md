@@ -1,12 +1,12 @@
-# Polly
+# TinyPoll
 Quick, secure, self-hosted polling.
 
 ## Installation
-All you need to run Polly is Git and Docker/docker-compose. Run these commands:
+All you need to run TinyPoll is Git and Docker/docker-compose. Run these commands:
 
 ```
-git clone https://github.com/whitbur/polly
-cd polly
+git clone https://github.com/whitbur/tinypoll
+cd tinypoll
 docker-compose run --rm node yarn build
 docker-compose up
 ```

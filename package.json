@@ -1,9 +1,9 @@
 {
-  "name": "polly",
+  "name": "tinypoll",
   "version": "1.0.0",
   "description": "Quick, anonymous, self-hosted polling.",
   "main": "server.js",
-  "repository": "https://github.com/whitbur/polly",
+  "repository": "https://github.com/whitbur/tinypoll",
   "author": "Whitney",
   "license": "MIT",
   "dependencies": {
