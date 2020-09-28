@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   node:
     image: node:14-alpine
@@ -9,10 +9,14 @@ services:
       - .:/app
     ports:
       - 3000:3000
+    depends_on:
+      - redis
   redis:
     image: redis:alpine
-    command: redis-server --appendonly yes
+    restart: always
+    #command: redis-server
+    ports:
+      - 6379:6379
     volumes:
-      - ./redis-conf:/usr/local/etc/redis
       - ./redis-data:/data
 

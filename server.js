@@ -1,8 +1,10 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const yargs = require('yargs')
-const redis = require('redis')
 const app = express()
+
+const Redis = require('redis')
+const redis = Redis.createClient({host: 'redis'})
 
 const argv = yargs
   .option('bind', {
@@ -58,10 +60,29 @@ app.get('/api/vote/:voteId', (req, res) => {
             {id: 11, text: "... than four choices"},
             {id: 12, text: "Like, six or seven would be fantastic"}
           ]
+        },
+        {
+          id: 3,
+          type: 'choose_one',
+          text: 'How many pages do you think you could read in a week?',
+          choices: [
+            {id: 13, text: '1-10'},
+            {id: 14, text: '10-20'},
+            {id: 15, text: '20-30'},
+            {id: 16, text: '30-40'},
+            {id: 17, text: '40-50'}
+          ]
         }
       ]
     }
   })
+})
+
+app.post('/api/vote/:voteId', (req, res) => {
+  const voteId = req.params.voteId
+  const responses = req.body.responses
+
+  res.json({voteId: voteId, responses: responses})
 })
 
 app.listen(argv.port, argv.bind, ()=> {

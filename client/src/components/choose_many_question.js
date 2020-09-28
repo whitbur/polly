@@ -23,7 +23,7 @@ const ChooseManyQuestion = function({ question, response, setResponse }) {
         {question.choices.map((choice) => (
         <FormControlLabel
           key={choice.id} 
-          control={<Checkbox checked={response[choice.id] === true} onChange={event => toggleChoice(choice.id)} />}
+          control={<Checkbox checked={response[choice.id] === true} onChange={() => toggleChoice(choice.id)} />}
           label={choice.text}
         />
         ))}

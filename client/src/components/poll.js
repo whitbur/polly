@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Backdrop, Box, Button, Card, CardContent, CircularProgress, Container, Typography, withStyles } from '@material-ui/core'
 import { Save as SaveIcon } from '@material-ui/icons';
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import RankedChoiceQuestion from './ranked_choice_question';
 import ChooseManyQuestion from './choose_many_question';
+import ChooseOneQuestion from './choose_one_question';
 
 const QuestionCard = withStyles({
   root: {
@@ -11,8 +12,9 @@ const QuestionCard = withStyles({
   }
 })(Card);
 
-const Poll = () => {
+const Poll = props => {
   const { voteId } = useParams()
+  const history = useHistory()
   const [poll, setPoll] = useState()
   const [responses, setResponses] = useState({})
 
@@ -23,13 +25,18 @@ const Poll = () => {
   }
 
   const saveResponses = () => {
-    alert("Are you even paying attention?")
+    fetch(`/api/vote/${voteId}`, {
+      method: 'POST', 
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({responses: responses})
+    })
+    .then(() => history.push('/thanks'))
   }
 
   useEffect(() => {
     fetch(`/api/vote/${voteId}`)
-    .then(r => r.json())
-    .then(r => { setPoll(r.poll) })
+        .then(r => r.json())
+        .then(r => { setPoll(r.poll) })
   }, [voteId])
 
   if (poll === undefined) {
@@ -49,7 +56,8 @@ const Poll = () => {
         <CardContent>
           {question.type === "ranked_choice" && <RankedChoiceQuestion question={question} response={responses[question.id]} setResponse={setResponse(question.id)}/>}
           {question.type === "choose_many" && <ChooseManyQuestion question={question} response={responses[question.id]} setResponse={setResponse(question.id)}/>}
-        </CardContent>  
+          {question.type === "choose_one" && <ChooseOneQuestion question={question} response={responses[question.id]} setResponse={setResponse(question.id)}/>}
+        </CardContent>
       </QuestionCard>
     ))}
 
