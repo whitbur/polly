@@ -1,19 +1,15 @@
-import { Box, Checkbox, CircularProgress, FormControlLabel, FormGroup, Typography } from '@material-ui/core';
-import React, { useEffect } from 'react'
+import { Box, Checkbox, FormControlLabel, FormGroup, Typography } from '@material-ui/core';
+import React from 'react'
 
 const ChooseManyQuestion = function({ question, response, setResponse }) {
-  const toggleChoice = choiceId => {
-    setResponse({...response, [choiceId]: !response[choiceId]})
-  }
-
-  useEffect(() => {
-    if (response === undefined) {
-      setResponse({})
+  const toggleChoice = choice => {
+    const oldChoices = response.choices || []
+    const idx = oldChoices.indexOf(choice) === -1
+    if (idx === -1) {
+      setResponse({choices: [...oldChoices, choice]})
+    } else {
+      setResponse({choices: oldChoices.slice().splice(idx, 1)})
     }
-  })
-  
-  if (response === undefined) {
-    return <CircularProgress />
   }
 
   return <Box>
@@ -22,9 +18,9 @@ const ChooseManyQuestion = function({ question, response, setResponse }) {
       <FormGroup>
         {question.choices.map((choice) => (
         <FormControlLabel
-          key={choice.id} 
-          control={<Checkbox checked={response[choice.id] === true} onChange={() => toggleChoice(choice.id)} />}
-          label={choice.text}
+          key={choice} 
+          control={<Checkbox checked={(response.choices || []).find(c => c === choice)} onChange={() => toggleChoice(choice)} />}
+          label={choice}
         />
         ))}
       </FormGroup>

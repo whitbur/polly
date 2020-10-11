@@ -12,11 +12,32 @@ const QuestionCard = withStyles({
   }
 })(Card);
 
-const Poll = props => {
+const renderQuestion = (question, responses, setResponse, admin) => {
+  const QuestionComponent = {
+    ranked_choice: RankedChoiceQuestion,
+    choose_many: ChooseManyQuestion,
+    choose_one: ChooseOneQuestion
+  }[question.type]
+
+  return (
+    <QuestionCard key={question.id}>
+      <CardContent>
+        <QuestionComponent 
+            question={question} 
+            response={responses[question.id]} 
+            setResponse={setResponse(question.id)}
+            admin={admin}/>
+      </CardContent>
+    </QuestionCard>
+  )
+}
+
+const Poll = ({ create }) => {
   const { voteId } = useParams()
   const history = useHistory()
   const [poll, setPoll] = useState()
   const [responses, setResponses] = useState({})
+  const [admin, setAdmin] = useState(false)
 
   const setResponse = questionId => {
     return response => {
@@ -36,8 +57,19 @@ const Poll = props => {
   useEffect(() => {
     fetch(`/api/vote/${voteId}`)
         .then(r => r.json())
-        .then(r => { setPoll(r.poll) })
+        .then(r => {
+          const newResponses = {}
+          r.poll.questions.forEach(q => newResponses[q.id] = {})
+          setResponses(newResponses)
+          setPoll(r.poll)
+        })
   }, [voteId])
+
+  useEffect(() => {
+    fetch('/api/admin_auth')
+        .then(r => r.json())
+        .then(r => { setAdmin(r.admin) })
+  }, [])
 
   if (poll === undefined) {
     return <Backdrop open={true}><CircularProgress /></Backdrop>
@@ -51,17 +83,15 @@ const Poll = props => {
       </CardContent>
     </QuestionCard>
 
-    {poll.questions.map(question => (
-      <QuestionCard key={question.id}>
-        <CardContent>
-          {question.type === "ranked_choice" && <RankedChoiceQuestion question={question} response={responses[question.id]} setResponse={setResponse(question.id)}/>}
-          {question.type === "choose_many" && <ChooseManyQuestion question={question} response={responses[question.id]} setResponse={setResponse(question.id)}/>}
-          {question.type === "choose_one" && <ChooseOneQuestion question={question} response={responses[question.id]} setResponse={setResponse(question.id)}/>}
-        </CardContent>
-      </QuestionCard>
-    ))}
+    {poll.questions.map(question => renderQuestion(question, responses, setResponse, admin))}
 
-    <Box textAlign="right" mt="15px">
+    {admin && <QuestionCard>
+      <CardContent>
+        <Button variant="contained" color="primary">Add Question</Button>
+      </CardContent>
+    </QuestionCard>}
+
+    <Box textAlign="right" mt="15px" mb="50px">
       <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={saveResponses}>Save</Button>
     </Box>
 

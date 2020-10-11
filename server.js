@@ -29,6 +29,15 @@ app.use(bodyParser.json())
 app.get('/api/vote/:voteId', (req, res) => {
   const voteId = req.params.voteId
   // TODO: Populate this from Redis
+
+  // redis.get(`vote:${voteId}`, (err, reply) => {
+  //   const pollId = parseInt(reply)
+  //   redis.hgetall(`poll:${pollId}`, (err, reply) => {
+  //     const poll = reply
+
+  //   })
+  // })
+
   res.json({
     poll: {
       id: 1,
@@ -38,13 +47,13 @@ app.get('/api/vote/:voteId', (req, res) => {
           id: 1,
           type: "choose_many",
           text: "Why are you a part of this reading group?",
-          allow_other: true,
-          other_text: "Another reason (please specify)",
+          allowOther: true, // TODO
+          otherLabel: "Another reason (please specify)", // TODO
           choices: [
-            {id: 1, text: "I like to read"},
-            {id: 2, text: "I know some people here"},
-            {id: 3, text: "The subject matter is interesting"},
-            {id: 4, text: "My spouse is forcing me to come with"}
+            "I like to read",
+            "I know some people here",
+            "The subject matter is interesting",
+            "My spouse is forcing me to come with"
           ]
         },
         {
@@ -52,25 +61,27 @@ app.get('/api/vote/:voteId', (req, res) => {
           type: "ranked_choice",
           text: "Please rank your choices from most desired to least. Only the top four matter.",
           choices: [
-            {id: 6, text: "Book one"},
-            {id: 7, text: "Book Two or something"},
-            {id: 8, text: "Title three - Oh right, authors"},
-            {id: 9, text: "Eh, whatever"},
-            {id: 10, text: "Actually we need more"},
-            {id: 11, text: "... than four choices"},
-            {id: 12, text: "Like, six or seven would be fantastic"}
+            "Book one",
+            "Book Two or something",
+            "Title three - Oh right, authors",
+            "Eh, whatever",
+            "Actually we need more",
+            "... than four choices",
+            "Like, six or seven would be fantastic"
           ]
         },
         {
           id: 3,
           type: 'choose_one',
           text: 'How many pages do you think you could read in a week?',
+          allowOther: true,
+          otherLabel: "Something else",
           choices: [
-            {id: 13, text: '1-10'},
-            {id: 14, text: '10-20'},
-            {id: 15, text: '20-30'},
-            {id: 16, text: '30-40'},
-            {id: 17, text: '40-50'}
+            '1-10',
+            '10-20',
+            '20-30',
+            '30-40',
+            '40-50'
           ]
         }
       ]
@@ -83,6 +94,12 @@ app.post('/api/vote/:voteId', (req, res) => {
   const responses = req.body.responses
 
   res.json({voteId: voteId, responses: responses})
+})
+
+app.get('/api/admin_auth', (req, res) => {
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log(`Admin check for ${ip}`)
+  res.json({admin: ip === "127.0.0.1"})
 })
 
 app.listen(argv.port, argv.bind, ()=> {

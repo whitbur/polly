@@ -1,31 +1,28 @@
-import { Box, CircularProgress, FormControlLabel, Radio, RadioGroup, Typography } from '@material-ui/core';
-import React, { useEffect } from 'react'
+import { Box, FormControlLabel, Radio, RadioGroup, TextField, Typography } from '@material-ui/core';
+import React, { useState } from 'react'
+
+// TODO - Bug: When you type into the "other" box, it deselects the radio button.
 
 const ChooseOneQuestion = function({ question, response, setResponse }) {
-  useEffect(() => {
-    if (response === undefined) {
-      setResponse(question.choices[0].id)
-    }
-  })
+  const [otherText, setOtherText] = useState("")
   
-  if (response === undefined) {
-    return <CircularProgress />
+  const handleChangeOther = function(event) {
+    setOtherText(event.target.value)
+    setResponse({choice: event.target.value})
   }
 
   return <Box>
     <Typography variant="body1">{question.text}</Typography>
     <Box marginX={5} marginTop={2} >
-      <RadioGroup value={response} onChange={event => setResponse(parseInt(event.target.value))}>
+      <RadioGroup value={response.choice} onChange={event => setResponse({choice: event.target.value})}>
         {question.choices.map((choice) => (
-          <FormControlLabel
-            key={choice.id} 
-            control={<Radio />}
-            value={choice.id}
-            label={choice.text}
-          />
+          <FormControlLabel key={choice} control={<Radio />} value={choice} label={choice} />
         ))}
+        {question.allowOther && <FormControlLabel key={'other'} control={<Radio />} value={otherText} label={
+          <TextField multiline style={{width: "300px"}} label={question.otherLabel} value={otherText} onChange={handleChangeOther} />} />}
       </RadioGroup>
     </Box>
+    <pre>Response: {JSON.stringify(response)}, OtherText: {otherText}</pre>
   </Box>
 }
 

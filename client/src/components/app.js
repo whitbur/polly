@@ -21,9 +21,8 @@ export default function() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Switch>
-        <Route path="/vote/:voteId">
-          <Poll />
-        </Route>
+        <Route path="/vote/:voteId"> <Poll /> </Route>
+        <Route path="/create"> <Poll edit={true} /> </Route>
         <Route path="/thanks">
           <CenterPaper>
             <Typography variant="h4">Thanks!</Typography>
