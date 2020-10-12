@@ -40,52 +40,61 @@ app.get('/api/vote/:voteId', (req, res) => {
 
   res.json({
     poll: {
-      id: 1,
-      title: "Book Club Next Subject",
-      questions: [
-        {
-          id: 1,
-          type: "choose_many",
-          text: "Why are you a part of this reading group?",
-          allowOther: true, // TODO
-          otherLabel: "Another reason (please specify)", // TODO
-          choices: [
-            "I like to read",
-            "I know some people here",
-            "The subject matter is interesting",
-            "My spouse is forcing me to come with"
-          ]
-        },
-        {
-          id: 2,
-          type: "ranked_choice",
-          text: "Please rank your choices from most desired to least. Only the top four matter.",
-          choices: [
-            "Book one",
-            "Book Two or something",
-            "Title three - Oh right, authors",
-            "Eh, whatever",
-            "Actually we need more",
-            "... than four choices",
-            "Like, six or seven would be fantastic"
-          ]
-        },
-        {
-          id: 3,
-          type: 'choose_one',
-          text: 'How many pages do you think you could read in a week?',
-          allowOther: true,
-          otherLabel: "Something else",
-          choices: [
-            '1-10',
-            '10-20',
-            '20-30',
-            '30-40',
-            '40-50'
-          ]
-        }
-      ]
-    }
+      id: 1
+    },
+    questions: [
+      {
+        id: 1,
+        pollId: 1,
+        type: "text_display",
+        title: "Book Club Next Subject",
+      },
+      {
+        id: 2,
+        pollId: 1,
+        type: "choose_many",
+        text: "Why are you a part of this reading group?",
+        allowOther: true, // TODO
+        otherLabel: "Another reason (please specify)", // TODO
+        choices: [
+          "I like to read",
+          "I know some people here",
+          "The subject matter is interesting",
+          "My spouse is forcing me to come with"
+        ]
+      },
+      {
+        id: 3,
+        pollId: 1,
+        type: "ranked_choice",
+        text: "Please rank your choices from most desired to least. Only the top four matter.",
+        choices: [
+          "Book one",
+          "Book Two or something",
+          "Title three - Oh right, authors",
+          "Eh, whatever",
+          "Actually we need more",
+          "... than four choices",
+          "Like, six or seven would be fantastic"
+        ]
+      },
+      {
+        id: 4,
+        pollId: 1,
+        type: 'choose_one',
+        text: 'How many pages do you think you could read in a week?',
+        allowOther: true,
+        otherLabel: "A different amount",
+        choices: [
+          '1-10',
+          '10-20',
+          '20-30',
+          '30-40',
+          '40-50'
+        ]
+      }
+    ],
+    responses: []
   })
 })
 

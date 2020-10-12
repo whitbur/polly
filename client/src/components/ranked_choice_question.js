@@ -1,8 +1,13 @@
-import { Box, Typography } from '@material-ui/core';
 import React from 'react'
+import { Box, Typography } from '@material-ui/core';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectResponseById, upsertResponse } from '../features/responsesSlice';
 
-const RankedChoiceQuestion = function({ question, response, setResponse }) {
+const RankedChoiceQuestion = function({ question }) {
+  const dispatch = useDispatch()
+  const response = useSelector(selectResponseById(question.id)) || {id: question.id, order: question.choices}
+
   const onDragEnd = result => {
     if (!result.destination) {
       return
@@ -13,7 +18,7 @@ const RankedChoiceQuestion = function({ question, response, setResponse }) {
     const [removed] = newOrder.splice(result.source.index, 1)
     newOrder.splice(result.destination.index, 0, removed)
 
-    setResponse({order: newOrder})
+    dispatch(upsertResponse({id: question.id, order: newOrder}))
   }
 
   return <Box>
@@ -23,7 +28,7 @@ const RankedChoiceQuestion = function({ question, response, setResponse }) {
         <Droppable droppableId={question.id.toString()}>
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {question.choices.map((choice, index) => (
+              {response.order.map((choice, index) => (
                 <Draggable key={choice} draggableId={choice} index={index}>
                   {(provided) => (
                     <Box 
