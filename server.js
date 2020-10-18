@@ -106,12 +106,12 @@ app.get('/api/vote/:voteId', (req, res) => {
 
 app.post('/api/vote/:voteId', (req, res) => {
     const voteId = req.params.voteId
-    const vote = req.body.vote
+    const vote = req.body
 
     // TODO: Validate response format
-    // TODO: Persist vote
-
-    res.json(vote)
+    
+    db.saveVote(voteId, vote)
+        .then(() => res.json(vote))
 })
 
 app.get('/api/admin_auth', (req, res) => {
