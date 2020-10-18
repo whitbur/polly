@@ -8,24 +8,24 @@ import RankedChoiceQuestion from './ranked_choice_question'
 import TextDisplayQuestion from './text_display_question'
 
 const Question = ({questionId, admin}) => {
-  const question = useSelector(selectQuestionById(questionId))
+    const question = useSelector(selectQuestionById(questionId))
 
-  const QuestionComponent = {
-    text_display: TextDisplayQuestion,
-    ranked_choice: RankedChoiceQuestion,
-    choose_many: ChooseManyQuestion,
-    choose_one: ChooseOneQuestion
-  }[question.type] // TODO: Bug. question is just an ID here, need to refactor.
-  
-  return (
-    <Card>
-      <CardContent>
-        <QuestionComponent 
-          question={question}
-          admin={admin}/>
-      </CardContent>
-    </Card>
-  )
+    const QuestionComponent = {
+        text_display: TextDisplayQuestion,
+        ranked_choice: RankedChoiceQuestion,
+        choose_many: ChooseManyQuestion,
+        choose_one: ChooseOneQuestion
+    }[question.type] // TODO: Bug. question is just an ID here, need to refactor.
+    
+    return (
+        <Card>
+            <CardContent>
+                <QuestionComponent 
+                    question={question}
+                    admin={admin}/>
+            </CardContent>
+        </Card>
+    )
 }
 
 export default Question

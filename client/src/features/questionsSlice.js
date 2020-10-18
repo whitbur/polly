@@ -2,8 +2,8 @@ const { createEntityAdapter, createAsyncThunk, createSlice } = require("@reduxjs
 
 const questionsAdapter = createEntityAdapter()
 
-export const fetchDataForVote = createAsyncThunk('questions/fetchDataForVote', voteId => {
-    return fetch(`/api/vote/${voteId}`).then(r => r.json())
+export const fetchPoll = createAsyncThunk('questions/fetchPoll', pollId => {
+    return fetch(`/api/poll/${pollId}`).then(r => r.json())
 })
 
 export const questionsSlice = createSlice({
@@ -13,8 +13,9 @@ export const questionsSlice = createSlice({
     }),
     reducers: {},
     extraReducers: {
-        [fetchDataForVote.fulfilled]: (state, action) => {
-            state.poll = action.payload.poll
+        [fetchPoll.fulfilled]: (state, action) => {
+            state.poll = Object.assign({}, action.payload)
+            delete state.poll.questions
             questionsAdapter.setAll(state, action.payload.questions)
         }
     }
