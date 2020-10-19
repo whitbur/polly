@@ -7,7 +7,7 @@ import ChooseOneQuestion from './choose_one_question'
 import RankedChoiceQuestion from './ranked_choice_question'
 import TextDisplayQuestion from './text_display_question'
 
-const Question = ({questionId, admin}) => {
+const Question = ({questionId, editing}) => {
     const question = useSelector(selectQuestionById(questionId))
 
     const QuestionComponent = {
@@ -22,7 +22,7 @@ const Question = ({questionId, admin}) => {
             <CardContent>
                 <QuestionComponent 
                     question={question}
-                    admin={admin}/>
+                    editing={editing}/>
             </CardContent>
         </Card>
     )

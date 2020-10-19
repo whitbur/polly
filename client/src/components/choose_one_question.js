@@ -3,7 +3,7 @@ import { Box, FormControlLabel, Radio, RadioGroup, TextField, Typography } from 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectResponseById, upsertResponse } from '../features/responsesSlice';
 
-const ChooseOneQuestion = function({ question, admin }) {
+const ChooseOneQuestion = function({ question, editing }) {
     const dispatch = useDispatch()
     const response = useSelector(selectResponseById(question.id)) || {id: question.id, choice: null}
 

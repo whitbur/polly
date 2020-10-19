@@ -1,22 +1,18 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { createMuiTheme } from '@material-ui/core/styles'
-import { Box, CssBaseline, Paper, ThemeProvider, Typography } from '@material-ui/core';
-import Poll from './poll';
-import { Provider } from 'react-redux';
-import store from '../store';
+import { CssBaseline, ThemeProvider, Typography } from '@material-ui/core'
+import { Provider } from 'react-redux'
+import Poll from './poll'
+import UpsertPoll from './upsert_poll'
+import CenterPaper from './center_paper'
+import store from '../store'
 
 const darkTheme = createMuiTheme({
     palette: {
         type: 'dark',
     },
 })
-
-const CenterPaper = props => <Box position="fixed" display="flex" justifyContent="center" alignItems="center" width="100%" height="100%">
-    <Paper style={{maxWidth: "600px", padding: "30px"}}>
-        {props.children}
-    </Paper>
-</Box>
 
 export default function() {
     return <ThemeProvider theme={darkTheme}>
@@ -25,6 +21,7 @@ export default function() {
             <Router>
                 <Switch>
                     <Route path="/vote/:voteId"> <Poll /> </Route>
+                    <Route path="/edit/:pollId"> <UpsertPoll /> </Route>
                     <Route path="/thanks">
                         <CenterPaper>
                             <Typography variant="h4">Thanks!</Typography>

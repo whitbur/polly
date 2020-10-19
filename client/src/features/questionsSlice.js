@@ -1,6 +1,8 @@
 const { createEntityAdapter, createAsyncThunk, createSlice } = require("@reduxjs/toolkit");
 
-const questionsAdapter = createEntityAdapter()
+const questionsAdapter = createEntityAdapter({
+    sortComparer: (a, b) => a.rank - b.rank
+})
 
 export const fetchPoll = createAsyncThunk('questions/fetchPoll', pollId => {
     return fetch(`/api/poll/${pollId}`).then(r => r.json())

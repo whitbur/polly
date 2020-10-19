@@ -4,7 +4,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectResponseById, upsertResponse } from '../features/responsesSlice';
 
-const RankedChoiceQuestion = function({ question }) {
+const RankedChoiceQuestion = function({ question, editing }) {
     const dispatch = useDispatch()
     const response = useSelector(selectResponseById(question.id)) || {id: question.id, order: question.choices}
 
