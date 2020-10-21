@@ -22,12 +22,18 @@ const Results = () => {
         .then(r => {
             setAdmin(r.admin)
             if (r.admin) {
-                fetch(`/api/results/${pollId}`)
-                .then(r => r.json())
-                .then(r => {
-                    // TODO: Load results into responsesSlice
-                    console.log(yaml.safeDump(r))
-                })
+                fetch(`/api/poll/${pollId}`)
+                    .then(r => r.json())
+                    .then(r => {
+                        // TODO: Load poll into questionsSlice
+                        console.log(yaml.safeDump(r))
+                    })
+                fetch(`/api/poll/${pollId}/results`)
+                    .then(r => r.json())
+                    .then(r => {
+                        // TODO: Load results into responsesSlice
+                        console.log(yaml.safeDump(r))
+                    })
             }
         })
     }, [pollId])

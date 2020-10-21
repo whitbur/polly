@@ -18,6 +18,7 @@ db.saveVote = (voteId, vote) => Promise.all([
     sadd(`poll:${vote.pollId}:voteIds`, voteId)
 ])
 
+db.getVoteIdsByPollId = pollId => smembers(`poll:${pollId}:voteIds`)
 db.getVoteStrsByPollId = pollId => smembers(`poll:${pollId}:voteIds`)
     .then(voteIds => voteIds.length > 0 ? mget(voteIds.map(voteId => `vote:${voteId}`)) : [])
     // TODO: Filter nil values

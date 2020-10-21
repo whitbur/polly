@@ -74,14 +74,16 @@ app.post('/api/poll/:pollId', only_admin, (req, res) => {
         .then(() => res.json(req.body))
 })
 
-app.get('/api/results/:pollId', only_admin, (req, res) => {
-    Promise.all([
-        db.getPollStr(req.params.pollId),
-        db.getVoteStrsByPollId(req.params.pollId)
-    ])
-    .then(([pollStr, voteStrs]) => {
+app.get('/api/poll/:pollId/voteIds', only_admin, (req, res) => {
+    db.getVoteIdsByPollId(req.params.pollId)
+    .then(voteIds => res.json(voteIds))
+})
+
+app.get('/api/poll/:pollId/votes', only_admin, (req, res) => {
+    db.getVoteStrsByPollId(req.params.pollId)
+    .then(voteStrs => {
         res.setHeader('Content-Type', 'application/json');
-        res.end(`{"poll":${pollStr},"votes":[${voteStrs.join()}]}`)
+        res.end(`[${voteStrs.join()}]`)
     })
 })
 
