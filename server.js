@@ -25,19 +25,18 @@ const argv = yargs
 app.use(express.static('client/build'))
 app.use(bodyParser.json())
 
+/*
+ * Unrestricted APIs
+ */
 app.get('/api/poll/:pollId', (req, res) => {
-    const pollId = req.params.pollId
-    
-    db.getPollStr(pollId).then(pollStr => {
+    db.getPollStr(req.params.pollId).then(pollStr => {
         res.setHeader('Content-Type', 'application/json');
         res.end(pollStr)
     })
 })
 
 app.get('/api/vote/:voteId', (req, res) => {
-    const voteId = req.params.voteId
-
-    // db.getVoteStr(voteId).then(voteStr => {
+    // db.getVoteStr(req.params.voteId).then(voteStr => {
     //     res.setHeader('Content-Type', 'application/json');
     //     res.end(voteStr)
     // })
@@ -49,23 +48,41 @@ app.get('/api/vote/:voteId', (req, res) => {
 })
 
 app.post('/api/vote/:voteId', (req, res) => {
-    const voteId = req.params.voteId
-    const vote = req.body
-
     // TODO: Validate response format
     
-    db.saveVote(voteId, vote)
-        .then(() => res.json(vote))
+    db.saveVote(req.params.voteId, req.body)
+        .then(() => res.json(req.body))
 })
 
-app.post('/api/poll/:pollId', (req, res) => {
-    const pollId = req.params.pollId
-    const poll = req.body
+/*
+ * Admin only APIs
+ */
+const only_admin = (req, res, next) => {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    if (ip !== "127.0.0.1") {
+        res.status(403)
+        res.json({error: "You are not authorized to take this action."})
+    } else {
+        next()
+    }
+}
 
+app.post('/api/poll/:pollId', only_admin, (req, res) => {
     // TODO: Validate poll format
 
-    db.savePoll(pollId, poll)
-        .then(() => res.json(poll))
+    db.savePoll(req.params.pollId, req.body)
+        .then(() => res.json(req.body))
+})
+
+app.get('/api/results/:pollId', only_admin, (req, res) => {
+    Promise.all([
+        db.getPollStr(req.params.pollId),
+        db.getVoteStrsByPollId(req.params.pollId)
+    ])
+    .then(([pollStr, voteStrs]) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(`{"poll":${pollStr},"votes":[${voteStrs.join()}]}`)
+    })
 })
 
 app.get('/api/admin_auth', (req, res) => {
@@ -74,6 +91,9 @@ app.get('/api/admin_auth', (req, res) => {
     res.json({admin: ip === "127.0.0.1"})
 })
 
+/*
+ * Entrypoint
+ */
 app.listen(argv.port, argv.bind, ()=> {
     console.log(`Express server listening at http://${argv.bind}:${argv.port}`)
 })

@@ -41,7 +41,6 @@ const Poll = () => {
             {editing && <Button variant="contained" color="primary" style={{marginRight:"15px"}}>Save Changes</Button>}
             <Button variant="contained" color="primary" startIcon={<SendIcon />} onClick={handleSave}>Submit</Button>
         </Box>
-
     </Container>
 }
 

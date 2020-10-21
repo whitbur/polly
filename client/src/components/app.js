@@ -4,7 +4,8 @@ import { createMuiTheme } from '@material-ui/core/styles'
 import { CssBaseline, ThemeProvider, Typography } from '@material-ui/core'
 import { Provider } from 'react-redux'
 import Poll from './poll'
-import UpsertPoll from './upsert_poll'
+import Results from './results'
+import EditPoll from './edit_poll'
 import CenterPaper from './center_paper'
 import store from '../store'
 
@@ -21,7 +22,8 @@ export default function() {
             <Router>
                 <Switch>
                     <Route path="/vote/:voteId"> <Poll /> </Route>
-                    <Route path="/edit/:pollId"> <UpsertPoll /> </Route>
+                    <Route path="/results/:pollId"><Results /></Route>
+                    <Route path="/edit/:pollId"> <EditPoll /> </Route>
                     <Route path="/thanks">
                         <CenterPaper>
                             <Typography variant="h4">Thanks!</Typography>

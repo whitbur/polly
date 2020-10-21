@@ -10,7 +10,7 @@ import "ace-builds/src-noconflict/mode-yaml";
 import "ace-builds/src-noconflict/theme-twilight";
 import CenterPaper from './center_paper'
 
-const UpsertPoll = () => {
+const EditPoll = () => {
     const { pollId } = useParams()
     const [admin, setAdmin] = useState(null)
     const [snackbarOpen, setSnackbarOpen] = useState(false)
@@ -70,4 +70,4 @@ const UpsertPoll = () => {
     </Container>
 }
 
-export default UpsertPoll
+export default EditPoll
