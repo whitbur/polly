@@ -21,7 +21,11 @@ export const submitResponses = createAsyncThunk('responses/submitResponses', (vo
       method: 'POST', 
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(Object.assign({}, vote, {responses: responses}))
-    }).then(r => r.json())
+    }).then(r => {
+        if (r.ok) return r.json()
+        console.log("Failed to submit response.")
+        throw new Error(r.text())
+    })
 })
 
 export const responsesSlice = createSlice({

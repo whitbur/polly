@@ -17,7 +17,9 @@ const Poll = () => {
     const questionIds = useSelector(selectQuestionIds)
 
     const handleSave = () => {
-        dispatch(submitResponses(voteId)).then(() => history.push('/thanks'))
+        dispatch(submitResponses(voteId))
+        .then(() => history.push('/thanks'))
+        .catch(e => console.log(e)) //TODO: Bug, this doesn't catch a failed thunk.
     }
 
     useEffect(() => {

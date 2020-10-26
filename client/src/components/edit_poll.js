@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Save as SaveIcon, CheckBox as CheckBoxIcon } from '@material-ui/icons'
+import { Save as SaveIcon, CheckBox as CheckBoxIcon, IndeterminateCheckBox as IndeterminateCheckBoxIcon } from '@material-ui/icons'
 import { Backdrop, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, Snackbar } from '@material-ui/core'
 import { Alert } from '@material-ui/lab';
 import AceEditor from 'react-ace'
@@ -15,8 +15,8 @@ const EditPoll = () => {
     const { pollId } = useParams()
     const [admin, setAdmin] = useState(null)
     const [snackbarOpen, setSnackbarOpen] = useState(false)
-    const [voteIds, setVoteIds] = useState([])
-    const [showVoteIds, setShowVoteIds] = useState(false)
+    const [voteMap, setVoteMap] = useState({})
+    const [showVotes, setShowVotes] = useState(false)
     const [pollYaml, setPollYaml] = useState("")
 
     const handleSave = () => {
@@ -40,9 +40,9 @@ const EditPoll = () => {
                     .then(r => {
                         setPollYaml(yaml.safeDump(r))
                     })
-                fetch(`/api/poll/${pollId}/voteIds`)
+                fetch(`/api/poll/${pollId}/votes`)
                     .then(r => r.json())
-                    .then(r => setVoteIds(r))
+                    .then(r => setVoteMap(r))
             }
         })
     }, [pollId])
@@ -52,6 +52,9 @@ const EditPoll = () => {
     } else if (admin === false) {
         return <CenterPaper>Sorry, you can't do this.</CenterPaper>
     }
+
+    const voteIds = Object.keys(voteMap)
+    voteIds.sort((a, b) => voteMap[a].createDate.localeCompare(voteMap[b].createDate))
 
     return <Container>
         <Box display="flex" flexDirection="column" height="100vh">
@@ -67,16 +70,23 @@ const EditPoll = () => {
                 enableLiveAutocompletion={true} 
                 style={{marginTop: "15px", flex: "1 0"}} />
             <Box display="flex" justifyContent="space-between" my="15px" flex="0 1">
-                <Box><Button variant="contained" color="primary" startIcon={<CheckBoxIcon />} onClick={() => setShowVoteIds(true)}>Vote Ids</Button></Box>
+                <Box><Button variant="contained" color="primary" startIcon={<CheckBoxIcon />} onClick={() => setShowVotes(true)}>Votes</Button></Box>
                 <Box><Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave}>Save Changes</Button></Box>
             </Box>
         </Box>
-        <Dialog open={showVoteIds} scroll="paper" onClose={() => setShowVoteIds(false)}>
+        <Dialog open={showVotes} scroll="paper" onClose={() => setShowVotes(false)}>
             <DialogContent>
-                <Box minWidth="200px">{voteIds.map(voteId => <div>{voteId}</div>)}</Box>
+                <table style={{minWidth:"250px"}}><tbody>
+                {voteIds.map(voteId => (
+                    <tr key={voteId}>
+                        <td>{voteId}</td><td style={{userSelect: "none"}}>{voteMap[voteId].responses.length > 0 ? <CheckBoxIcon style={{color: "green"}}/> : <IndeterminateCheckBoxIcon style={{color: "gray"}}/> }</td>
+                    </tr>
+                ))}
+                </tbody></table>
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" color="primary">Copy</Button>
+                <Button variant="contained" color="primary">Add More</Button>
+                <Button variant="contained" color="primary">Copy ({Object.keys(voteMap).length})</Button>
             </DialogActions>
         </Dialog>
         <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => setSnackbarOpen(false)}>

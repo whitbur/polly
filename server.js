@@ -36,14 +36,9 @@ app.get('/api/poll/:pollId', (req, res) => {
 })
 
 app.get('/api/vote/:voteId', (req, res) => {
-    // db.getVoteStr(req.params.voteId).then(voteStr => {
-    //     res.setHeader('Content-Type', 'application/json');
-    //     res.end(voteStr)
-    // })
-
-    res.json({
-        pollId: "qGW1in1176wfdrgF5PdsCe",
-        responses: []
+    db.getVoteStr(req.params.voteId).then(voteStr => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(voteStr)
     })
 })
 
@@ -52,6 +47,12 @@ app.post('/api/vote/:voteId', (req, res) => {
     
     db.saveVote(req.params.voteId, req.body)
         .then(() => res.json(req.body))
+        .catch(e => {
+            console.log(`Error while saving vote ${req.params.voteId}`)
+            console.log(e)
+            res.status(500)
+            res.json({error: JSON.stringify(e)})
+        })
 })
 
 /*
@@ -67,6 +68,16 @@ const only_admin = (req, res, next) => {
     }
 }
 
+app.get('/api/poll/:pollId/voteIds', only_admin, (req, res) => {
+    db.getVoteIdsByPollId(req.params.pollId)
+    .then(voteIds => res.json(voteIds))
+})
+
+app.get('/api/poll/:pollId/votes', only_admin, (req, res) => {
+    db.getVoteMapByPollId(req.params.pollId)
+    .then(voteMap => res.json(voteMap))
+})
+
 app.post('/api/poll/:pollId', only_admin, (req, res) => {
     // TODO: Validate poll format
 
@@ -74,17 +85,10 @@ app.post('/api/poll/:pollId', only_admin, (req, res) => {
         .then(() => res.json(req.body))
 })
 
-app.get('/api/poll/:pollId/voteIds', only_admin, (req, res) => {
-    db.getVoteIdsByPollId(req.params.pollId)
-    .then(voteIds => res.json(voteIds))
-})
+app.get('/api/poll/:pollId/createVotes', only_admin, (req, res) => {
+    db.createVotes(req.params.pollId, parseInt(req.query.numVotes) || 10)
+        .then(newVoteIds => res.json(newVoteIds))
 
-app.get('/api/poll/:pollId/votes', only_admin, (req, res) => {
-    db.getVoteStrsByPollId(req.params.pollId)
-    .then(voteStrs => {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(`[${voteStrs.join()}]`)
-    })
 })
 
 app.get('/api/admin_auth', (req, res) => {
