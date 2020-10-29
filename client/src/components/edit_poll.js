@@ -4,6 +4,7 @@ import { Save as SaveIcon, CheckBox as CheckBoxIcon, IndeterminateCheckBox as In
 import { Backdrop, Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, Snackbar } from '@material-ui/core'
 import { Alert } from '@material-ui/lab';
 import AceEditor from 'react-ace'
+import copy from 'clipboard-copy'
 import yaml from 'js-yaml'
 
 import "ace-builds/src-min-noconflict/ext-language_tools";
@@ -16,6 +17,7 @@ const EditPoll = () => {
     const { pollId } = useParams()
     const [admin, setAdmin] = useState(null)
     const [snackbarOpen, setSnackbarOpen] = useState(false)
+    const [copied, setCopied] = useState(false)
     const [voteMap, setVoteMap] = useState({})
     const [showVotes, setShowVotes] = useState(false)
     const [pollYaml, setPollYaml] = useState("")
@@ -28,6 +30,12 @@ const EditPoll = () => {
             body: JSON.stringify(poll)
         })
         .then(r => setSnackbarOpen(true))
+    }
+
+    const copyVoteIds = () => {
+        copy(Object.keys(voteMap).join("\n"))
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
     }
 
     useEffect(() => {
@@ -87,7 +95,7 @@ const EditPoll = () => {
             </DialogContent>
             <DialogActions>
                 <Button variant="contained" color="primary">Add More</Button>
-                <Button variant="contained" color="primary">Copy ({Object.keys(voteMap).length})</Button>
+                <Button variant="contained" color="primary" onClick={copyVoteIds}>{copied ? "Copied!" : "Copy"} ({Object.keys(voteMap).length})</Button>
             </DialogActions>
         </Dialog>
         <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => setSnackbarOpen(false)}>
