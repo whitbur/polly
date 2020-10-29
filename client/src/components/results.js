@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Backdrop, Box, CircularProgress, Container } from '@material-ui/core'
-import { selectQuestionIds } from '../features/questionsSlice'
-import { useSelector } from 'react-redux'
-import yaml from 'js-yaml'
+import { fetchPoll, selectQuestionIds } from '../features/questionsSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 import CenterPaper from './center_paper'
-
-// TODO: Actually write Result
-const Result = () => <p>Coming soon...</p>
+import Result from './results/result'
 
 const Results = () => {
     const { pollId } = useParams()
-    const [admin, setAdmin] = useState(null)
+    const dispatch = useDispatch()
 
+    const [admin, setAdmin] = useState(null)
+    const [responsesByQuestionId, setResponsesByQuestionId] = useState({})
     const questionIds = useSelector(selectQuestionIds)
 
     useEffect(() => {
@@ -22,21 +21,21 @@ const Results = () => {
         .then(r => {
             setAdmin(r.admin)
             if (r.admin) {
-                fetch(`/api/poll/${pollId}`)
+                dispatch(fetchPoll(pollId))
+                fetch(`/api/poll/${pollId}/votes`)
                     .then(r => r.json())
                     .then(r => {
-                        // TODO: Load poll into questionsSlice
-                        console.log(yaml.safeDump(r))
-                    })
-                fetch(`/api/poll/${pollId}/results`)
-                    .then(r => r.json())
-                    .then(r => {
-                        // TODO: Load results into responsesSlice
-                        console.log(yaml.safeDump(r))
+                        const newResponsesByQuestionId = {}
+                        Object.keys(r).forEach(voteId => {
+                            r[voteId].responses.forEach(response => {
+                                newResponsesByQuestionId[response.id] = (newResponsesByQuestionId[response.id] || []).concat(response)
+                            })
+                        })
+                        setResponsesByQuestionId(newResponsesByQuestionId)
                     })
             }
         })
-    }, [pollId])
+    }, [pollId, dispatch])
 
     if (admin === null) {
         return <Backdrop open={true}><CircularProgress /></Backdrop>
@@ -45,7 +44,7 @@ const Results = () => {
     }
 
     return <Container>
-        {questionIds.map(questionId => <Box key={questionId} mt="15px"><Result questionId={questionId} /></Box>)}
+        {questionIds.map(questionId => <Box key={questionId} mt="15px"><Result questionId={questionId} responses={responsesByQuestionId[questionId]} /></Box>)}
     </Container>
 }
 
