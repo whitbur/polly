@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectPoll, selectQuestionIds } from '../features/questionsSlice'
 import { fetchVote, submitResponses } from '../features/responsesSlice'
 
-import Question from './question'
+import Question from './questions/question'
 
 const Poll = () => {
     const { voteId } = useParams()

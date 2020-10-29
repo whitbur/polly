@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Box, FormControlLabel, Radio, RadioGroup, TextField, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectResponseById, upsertResponse } from '../features/responsesSlice';
+import { selectResponseById, upsertResponse } from '../../features/responsesSlice';
 
 const ChooseOneQuestion = function({ question, editing }) {
     const dispatch = useDispatch()

@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Typography } from '@material-ui/core';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectResponseById, upsertResponse } from '../features/responsesSlice';
+import { selectResponseById, upsertResponse } from '../../features/responsesSlice';
 
 const RankedChoiceQuestion = function({ question, editing }) {
     const dispatch = useDispatch()

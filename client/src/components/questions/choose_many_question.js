@@ -1,7 +1,7 @@
 import { Box, Checkbox, FormControlLabel, FormGroup, TextField, Typography } from '@material-ui/core';
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { selectResponseById, upsertResponse } from '../features/responsesSlice';
+import { selectResponseById, upsertResponse } from '../../features/responsesSlice';
 
 const ChooseManyQuestion = function({ question, editing }) {
     const dispatch = useDispatch()
