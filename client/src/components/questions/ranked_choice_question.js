@@ -40,8 +40,7 @@ const RankedChoiceQuestion = function({ question }) {
                                                 padding={1}
                                                 marginTop={(question.maxChoices && index === question.maxChoices) ? "50px" : 1}
                                                 fontWeight={(question.maxChoices && index < question.maxChoices) ? "bold" : "normal"}
-                                                backgroundColor="#424242"
-                                                style={provided.draggableProps.style}>
+                                                style={{backgroundColor: "#424242", ...provided.draggableProps.style}}>
                                             {choice}
                                         </Box>
                                     )}
