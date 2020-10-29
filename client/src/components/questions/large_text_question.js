@@ -3,7 +3,7 @@ import { Box, TextField, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectResponseById, upsertResponse } from '../../features/responsesSlice';
 
-const LargeTextQuestion = function({ question, editing }) {
+const LargeTextQuestion = function({ question }) {
     const dispatch = useDispatch()
     const response = useSelector(selectResponseById(question.id)) || {id: question.id, choice: null}
 

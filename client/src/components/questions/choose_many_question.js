@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { selectResponseById, upsertResponse } from '../../features/responsesSlice';
 
-const ChooseManyQuestion = function({ question, editing }) {
+const ChooseManyQuestion = function({ question }) {
     const dispatch = useDispatch()
     const response = useSelector(selectResponseById(question.id)) || {id: question.id, choices: []}
 
