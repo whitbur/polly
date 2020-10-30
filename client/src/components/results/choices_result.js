@@ -1,5 +1,5 @@
-import { Box } from '@material-ui/core';
 import React from 'react';
+import { Box, Typography } from '@material-ui/core';
 
 /*
  * This Result display can be used when the Question has a `choices` attribute, and the responses
@@ -21,9 +21,12 @@ const ChoicesResult = ({ question, responses }) => {
     choices.sort((a, b) => choiceCounts[b] - choiceCounts[a])
     
     return <Box>
-        {choices.map((choice, index) => <div key={index}>
-            {choiceCounts[choice]} - {choice}
-        </div>)}
+        <Typography variant="body1">{question.text}</Typography>
+        <Box marginX={5} marginTop={2}>
+            {choices.map((choice, index) => <Typography key={index} component="div">
+                {choiceCounts[choice]} - {choice}
+            </Typography>)}
+        </Box>
     </Box>
 }
 

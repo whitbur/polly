@@ -43,8 +43,9 @@ const Results = () => {
         return <CenterPaper>Sorry, you can't do this.</CenterPaper>
     }
 
-    return <Container>
+    return <Container maxWidth="sm">
         {questionIds.map(questionId => <Box key={questionId} mt="15px"><Result questionId={questionId} responses={responsesByQuestionId[questionId]} /></Box>)}
+        <Box mb="50px"></Box>
     </Container>
 }
 

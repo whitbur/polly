@@ -85,7 +85,7 @@ const EditPoll = () => {
         </Box>
         <Dialog open={showVotes} scroll="paper" onClose={() => setShowVotes(false)}>
             <DialogContent>
-                <table style={{minWidth:"250px"}}><tbody>
+                <table style={{minWidth:"300px"}}><tbody>
                 {voteIds.map(voteId => (
                     <tr key={voteId}>
                         <td>{voteId}</td><td style={{userSelect: "none"}}>{voteMap[voteId].responses.length > 0 ? <CheckBoxIcon style={{color: "green"}}/> : <IndeterminateCheckBoxIcon style={{color: "gray"}}/> }</td>
@@ -94,7 +94,7 @@ const EditPoll = () => {
                 </tbody></table>
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" color="primary">Add More</Button>
+                <Button variant="contained" color="primary">Add 10 More</Button>
                 <Button variant="contained" color="primary" onClick={copyVoteIds}>{copied ? "Copied!" : "Copy"} ({Object.keys(voteMap).length})</Button>
             </DialogActions>
         </Dialog>
