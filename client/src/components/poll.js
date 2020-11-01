@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react'
-import { Backdrop, Box, Button, CircularProgress, Container } from '@material-ui/core'
+import React, { useEffect, useState } from 'react'
+import { Backdrop, Box, Button, Card, CardContent, CircularProgress, Container } from '@material-ui/core'
 import { Send as SendIcon } from '@material-ui/icons'
 import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import SwipeableViews from 'react-swipeable-views'
 import { selectPoll, selectQuestionIds } from '../features/questionsSlice'
 import { fetchVote, submitResponses } from '../features/responsesSlice'
 
 import Question from './questions/question'
+import TextDisplayQuestion from './questions/text_display_question'
 
 const Poll = () => {
     const { voteId } = useParams()
@@ -15,6 +17,7 @@ const Poll = () => {
 
     const poll = useSelector(selectPoll)
     const questionIds = useSelector(selectQuestionIds)
+    const [questionIndex, setQuestionIndex] = useState(0)
 
     const handleSave = () => {
         dispatch(submitResponses(voteId))
@@ -31,11 +34,24 @@ const Poll = () => {
     }
 
     return <Container maxWidth="sm">
-        {questionIds.map(questionId => <Box key={questionId} mt="15px"><Question questionId={questionId} /></Box>)}
+        {(poll.title || poll.text) && (
+        <Card style={{marginTop: "15px"}}>
+            <CardContent>
+                <TextDisplayQuestion question={poll}/>
+            </CardContent>
+        </Card>)}
 
-        <Box display="flex" justifyContent="flex-end" mt="15px" mb="50px">
-            <Button variant="contained" color="primary" startIcon={<SendIcon />} onClick={handleSave}>Submit</Button>
-        </Box>
+        <SwipeableViews index={questionIndex} onChangeIndex={(event, value) => setQuestionIndex(value)} disabled={true}>
+            {questionIds.map((questionId, index) => <Box key={questionId} mt="15px">
+                <Question questionId={questionId} />
+                <Box display="flex" mt="15px" mb="50px">
+                    {index !== 0 && <Button variant="contained" color="primary" onClick={() => setQuestionIndex(index - 1)}>Prev</Button>}
+                    {index !== questionIds.length-1
+                        ? <Button variant="contained" color="primary" style={{marginLeft:"auto"}} onClick={() => setQuestionIndex(index + 1)}>Next</Button>
+                        : <Button variant="contained" color="primary" style={{marginLeft:"auto"}} startIcon={<SendIcon />} onClick={handleSave}>Submit</Button>}
+                </Box>
+            </Box>)}
+        </SwipeableViews>
     </Container>
 }
 

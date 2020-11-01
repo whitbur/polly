@@ -4,6 +4,19 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectResponseById, upsertResponse } from '../../features/responsesSlice';
 
+const getRenderChoice = (question, choices) => (provided, snapshot, rubric) => (
+    <Box {...provided.draggableProps} 
+            {...provided.dragHandleProps} 
+            ref={provided.innerRef}
+            border="1px solid white"
+            padding={1}
+            marginTop={(question.maxChoices && rubric.source.index === question.maxChoices) ? "50px" : 1}
+            fontWeight={(question.maxChoices && rubric.source.index < question.maxChoices) ? "bold" : "normal"}
+            style={{backgroundColor: "#424242", ...provided.draggableProps.style}}>
+        {choices[rubric.source.index]}
+    </Box>
+)
+
 const RankedChoiceQuestion = function({ question }) {
     const dispatch = useDispatch()
     const response = useSelector(selectResponseById(question.id)) || {id: question.id, order: question.choices.slice(0, question.maxChoices || -1)}
@@ -23,27 +36,18 @@ const RankedChoiceQuestion = function({ question }) {
         dispatch(upsertResponse({id: question.id, order: newOrder.slice(0, question.maxChoices || -1)}))
     }
 
+    const renderChoice = getRenderChoice(question, chosenOrder)
+
     return <Box>
         <Typography variant="body1">{question.text}</Typography>
         <Box marginX={5} marginTop={2}>
             <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId={question.id.toString()}>
+                <Droppable droppableId={question.id.toString()} renderClone={renderChoice}>
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef}>
                             {chosenOrder.map((choice, index) => (
                                 <Draggable key={choice} draggableId={choice} index={index}>
-                                    {(provided) => (
-                                        <Box {...provided.draggableProps} 
-                                                {...provided.dragHandleProps} 
-                                                ref={provided.innerRef}
-                                                border="1px solid white"
-                                                padding={1}
-                                                marginTop={(question.maxChoices && index === question.maxChoices) ? "50px" : 1}
-                                                fontWeight={(question.maxChoices && index < question.maxChoices) ? "bold" : "normal"}
-                                                style={{backgroundColor: "#424242", ...provided.draggableProps.style}}>
-                                            {choice}
-                                        </Box>
-                                    )}
+                                    {renderChoice}
                                 </Draggable>
                             ))}
                             {provided.placeholder}
