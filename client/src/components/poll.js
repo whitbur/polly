@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Backdrop, Box, Button, CircularProgress, Container } from '@material-ui/core'
+import { Backdrop, Box, Button, Card, CardContent, CircularProgress, Container } from '@material-ui/core'
 import { Send as SendIcon } from '@material-ui/icons'
 import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,6 +7,7 @@ import { selectPoll, selectQuestionIds } from '../features/questionsSlice'
 import { fetchVote, submitResponses } from '../features/responsesSlice'
 
 import Question from './questions/question'
+import TextDisplayQuestion from './questions/text_display_question'
 
 const Poll = () => {
     const { voteId } = useParams()
@@ -31,6 +32,13 @@ const Poll = () => {
     }
 
     return <Container maxWidth="sm">
+        {(poll.title || poll.text) && (
+        <Card style={{marginTop: "15px"}}>
+            <CardContent>
+                <TextDisplayQuestion question={poll}/>
+            </CardContent>
+        </Card>)}
+
         {questionIds.map(questionId => <Box key={questionId} mt="15px"><Question questionId={questionId} /></Box>)}
 
         <Box display="flex" justifyContent="flex-end" mt="15px" mb="50px">
