@@ -28,7 +28,8 @@ const ChooseManyQuestion = function({ question }) {
             } else return r
         }, [])
 
-        dispatch(upsertResponse({id: question.id, choices: newChoices}))
+        const responseInvalid = question.numRequired && newChoices.length < question.numRequired
+        dispatch(upsertResponse({id: question.id, choices: newChoices, invalid: responseInvalid}))
     }
 
     const toggleChoice = choice => {
