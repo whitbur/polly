@@ -16,4 +16,3 @@ services:
     restart: always
     volumes:
       - ./redis-data:/data
-

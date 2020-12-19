@@ -4,8 +4,8 @@ import { Backdrop, Box, CircularProgress, Container } from '@material-ui/core'
 import { fetchPoll, selectQuestionIds } from '../features/questionsSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
-import CenterPaper from './center_paper'
 import Result from './results/result'
+import Unauthorized from './unauthorized'
 
 const Results = () => {
     const { pollId } = useParams()
@@ -40,7 +40,7 @@ const Results = () => {
     if (admin === null) {
         return <Backdrop open={true}><CircularProgress /></Backdrop>
     } else if (admin === false) {
-        return <CenterPaper>Sorry, you can't do this.</CenterPaper>
+        return <Unauthorized/>
     }
 
     return <Container maxWidth="sm">

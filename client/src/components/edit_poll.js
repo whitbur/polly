@@ -11,7 +11,7 @@ import "ace-builds/src-min-noconflict/ext-language_tools";
 import "ace-builds/src-min-noconflict/ext-searchbox";
 import "ace-builds/src-noconflict/mode-yaml";
 import "ace-builds/src-noconflict/theme-twilight";
-import CenterPaper from './center_paper'
+import Unauthorized from './unauthorized';
 
 const EditPoll = () => {
     const { pollId } = useParams()
@@ -59,7 +59,7 @@ const EditPoll = () => {
     if (admin === null) {
         return <Backdrop open={true}><CircularProgress /></Backdrop>
     } else if (admin === false) {
-        return <CenterPaper>Sorry, you can't do this.</CenterPaper>
+        return <Unauthorized />
     }
 
     const voteIds = Object.keys(voteMap)

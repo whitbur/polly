@@ -3,3 +3,4 @@ node_modules
 redis-data
 client/node_modules
 client/build
+.env

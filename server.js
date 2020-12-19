@@ -1,3 +1,5 @@
+require("dotenv").config()
+
 const express = require('express')
 const session = require('express-session')
 const bodyParser = require('body-parser')
@@ -5,6 +7,7 @@ const yargs = require('yargs')
 const path = require('path')
 const redis = require('redis')
 const redisClient = redis.createClient({host: 'redis'})
+redisClient.on('error', console.error)
 const redisStore = require('connect-redis')(session)
 
 const app = express()
@@ -26,7 +29,7 @@ const argv = yargs
     .help('h')
     .alias('h', 'help')
     .argv
-    
+
 app.use(express.static('client/build'))
 app.use(bodyParser.json())
 app.use(session({
@@ -76,8 +79,10 @@ app.post('/api/set_pass', (req, res) => {
  * Admin only APIs
  */
 const only_admin = (req, res, next) => {
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    if (ip !== "127.0.0.1") {
+    const authorized = req.session.password &&
+            process.env.ADMIN_PASSWORD &&
+            req.session.password === process.env.ADMIN_PASSWORD
+    if (!authorized) {
         res.status(403)
         res.json({error: "You are not authorized to take this action."})
     } else {
@@ -113,7 +118,7 @@ app.get('/api/admin_auth', (req, res) => {
             process.env.ADMIN_PASSWORD &&
             req.session.password === process.env.ADMIN_PASSWORD
     console.log(`Admin check ${authorized ? 'successful' : 'unsuccessful'} for ${req.headers['x-forwarded-for']}`)
-    res.json({admin: authorized})
+    res.json({admin: authorized == true })
 })
 
 /*
