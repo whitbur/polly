@@ -1,8 +1,13 @@
 const express = require('express')
+const session = require('express-session')
 const bodyParser = require('body-parser')
 const yargs = require('yargs')
-const app = express()
+const path = require('path')
+const redis = require('redis')
+const redisClient = redis.createClient({host: 'redis'})
+const redisStore = require('connect-redis')(session)
 
+const app = express()
 const db = require('./db')
 
 const argv = yargs
@@ -24,6 +29,13 @@ const argv = yargs
     
 app.use(express.static('client/build'))
 app.use(bodyParser.json())
+app.use(session({
+    secret: process.env.SECRET || 'ThisIsInsecurePleaseSetEnvSecret',
+    name: '_tinypoll',
+    resave: false,
+    saveUninitialized: true,
+    store: new redisStore({client: redisClient})
+}))
 
 /*
  * Unrestricted APIs
@@ -53,6 +65,11 @@ app.post('/api/vote/:voteId', (req, res) => {
             res.status(500)
             res.json({error: JSON.stringify(e)})
         })
+})
+
+app.post('/api/set_pass', (req, res) => {
+    req.session.password = req.body.password
+    res.json({ok: true})
 })
 
 /*
@@ -92,9 +109,18 @@ app.get('/api/poll/:pollId/createVotes', only_admin, (req, res) => {
 })
 
 app.get('/api/admin_auth', (req, res) => {
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    console.log(`Admin check for ${ip}`)
-    res.json({admin: ip === "127.0.0.1"})
+    const authorized = req.session.password &&
+            process.env.ADMIN_PASSWORD &&
+            req.session.password === process.env.ADMIN_PASSWORD
+    console.log(`Admin check ${authorized ? 'successful' : 'unsuccessful'} for ${req.headers['x-forwarded-for']}`)
+    res.json({admin: authorized})
+})
+
+/*
+ * Fallback to react router
+ */
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
 })
 
 /*
