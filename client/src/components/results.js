@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Backdrop, Box, CircularProgress, Container } from '@material-ui/core'
-import { fetchPoll, selectQuestionIds } from '../features/questionsSlice'
+import { fetchPoll, selectPoll, selectQuestionIds } from '../features/questionsSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Result from './results/result'
 import Unauthorized from './unauthorized'
 
-const Results = () => {
+const Results = ({ setPalette }) => {
     const { pollId } = useParams()
     const dispatch = useDispatch()
 
     const [admin, setAdmin] = useState(null)
     const [responsesByQuestionId, setResponsesByQuestionId] = useState({})
+    const poll = useSelector(selectPoll)
     const questionIds = useSelector(selectQuestionIds)
 
     useEffect(() => {
@@ -36,6 +37,12 @@ const Results = () => {
             }
         })
     }, [pollId, dispatch])
+
+    useEffect(() => {
+        if (poll) {
+            setPalette(poll.palette)
+        }
+    }, [poll, setPalette])
 
     if (admin === null) {
         return <Backdrop open={true}><CircularProgress /></Backdrop>

@@ -42,14 +42,21 @@ db.getVoteMapByPollId = pollId => smembers(`poll:${pollId}:voteIds`)
     })
 
 db.createVotes = (pollId, numVotes) => {
-    const newVote = JSON.stringify({pollId: pollId, createDate: new Date(), lastUpdate: new Date(), responses: []})
+    const newVote = {pollId: pollId, createDate: new Date(), lastUpdate: new Date(), responses: []}
+    const newVoteStr = JSON.stringify(newVote)
     const newVoteIds = [...Array(numVotes)].map(() => short.generate())
-    const msetArgs = newVoteIds.map(voteId => [`vote:${voteId}`, newVote]).flat()
+    const msetArgs = newVoteIds.map(voteId => [`vote:${voteId}`, newVoteStr]).flat()
 
     return Promise.all([
         mset(...msetArgs),
         sadd(`poll:${pollId}:voteIds`, newVoteIds)
-    ]).then(() => newVoteIds)
+    ]).then(() => {
+        const voteMap = {}
+        newVoteIds.forEach(voteId => {
+            voteMap[voteId] = newVote
+        })
+        return voteMap
+    })
 }
 
 module.exports = db

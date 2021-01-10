@@ -1,11 +1,13 @@
 import React from 'react'
-import { Box, Typography } from '@material-ui/core';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectResponseById, upsertResponse } from '../../features/responsesSlice';
+import { Box, Typography } from '@material-ui/core'
+import { useTheme } from '@material-ui/core/styles'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectResponseById, upsertResponse } from '../../features/responsesSlice'
 
 const RankedChoiceQuestion = function({ question }) {
     const dispatch = useDispatch()
+    const theme = useTheme()
     const response = useSelector(selectResponseById(question.id)) || {id: question.id, order: question.choices.slice(0, question.maxChoices || -1)}
     const chosenOrder = response.order.concat(question.choices.filter(c => response.order.indexOf(c) === -1))
 
@@ -40,7 +42,7 @@ const RankedChoiceQuestion = function({ question }) {
                                                 padding={1}
                                                 marginTop={(question.maxChoices && index === question.maxChoices) ? "50px" : 1}
                                                 fontWeight={(question.maxChoices && index < question.maxChoices) ? "bold" : "normal"}
-                                                style={{backgroundColor: "#424242", ...provided.draggableProps.style}}>
+                                                style={{backgroundColor: theme.palette.background.paper, ...provided.draggableProps.style}}>
                                             {choice}
                                         </Box>
                                     )}

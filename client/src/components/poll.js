@@ -10,7 +10,7 @@ import { fetchVote, selectResponseById, submitResponses } from '../features/resp
 import Question from './questions/question'
 import TextDisplayQuestion from './questions/text_display_question'
 
-const Poll = () => {
+const Poll = ({ setPalette }) => {
     const { voteId } = useParams()
     const history = useHistory()
     const dispatch = useDispatch()
@@ -42,6 +42,12 @@ const Poll = () => {
      dispatch(fetchVote(voteId))
     }, [dispatch, voteId])
 
+    useEffect(() => {
+        if (poll) {
+            setPalette(poll.palette)
+        }
+    }, [poll, setPalette])
+
     if (poll === null) {
         return <Backdrop open={true}><CircularProgress /></Backdrop>
     }
@@ -57,7 +63,7 @@ const Poll = () => {
         {questionIds.map(questionId => <Box key={questionId} mt="15px"><Question questionId={questionId} submitAttempted={submitAttempted}/></Box>)}
 
         <Box display="flex" justifyContent="flex-end" mt="15px" mb="50px">
-            <Button variant="contained" color={allQuestionsSatisfied ? "primary" : "default"} startIcon={<SendIcon />} onClick={handleSave}>Submit</Button>
+            <Button variant="contained" color={allQuestionsSatisfied ? "secondary" : "default"} startIcon={<SendIcon />} onClick={handleSave}>Submit</Button>
         </Box>
         <Snackbar open={snackbarOpen} autoHideDuration={5000} onClose={() => setSnackbarOpen(false)}>
             <Alert severity="error" onClose={() => setSnackbarOpen(false)}>

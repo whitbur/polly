@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { createMuiTheme } from '@material-ui/core/styles'
 import { CssBaseline, ThemeProvider, Typography } from '@material-ui/core'
@@ -9,21 +9,24 @@ import EditPoll from './edit_poll'
 import CenterPaper from './center_paper'
 import store from '../store'
 
-const darkTheme = createMuiTheme({
+const defaultTheme = createMuiTheme({
     palette: {
-        type: 'dark',
-    },
+        type: "dark"
+    }
 })
 
 export default function() {
-    return <ThemeProvider theme={darkTheme}>
+    const [theme, setTheme] = useState(defaultTheme)
+    const setPalette = useCallback(palette => setTheme(createMuiTheme({palette: palette})), [setTheme])
+
+    return <ThemeProvider theme={theme}>
         <Provider store={store}>
             <CssBaseline />
             <Router>
                 <Switch>
-                    <Route path="/vote/:voteId"> <Poll /> </Route>
-                    <Route path="/results/:pollId"><Results /></Route>
-                    <Route path="/edit/:pollId"> <EditPoll /> </Route>
+                    <Route path="/vote/:voteId"> <Poll setPalette={setPalette}/> </Route>
+                    <Route path="/results/:pollId"><Results setPalette={setPalette}/></Route>
+                    <Route path="/edit/:pollId"> <EditPoll setPalette={setPalette}/> </Route>
                     <Route path="/thanks">
                         <CenterPaper>
                             <Typography variant="h4">Thanks!</Typography>
